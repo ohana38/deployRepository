@@ -1,0 +1,35 @@
+{% extends 'todo/base.html' %}
+
+{% block header %}
+  <h1>カテゴリ一覧画面</h1>
+  <div class="mb-3">
+    <a href="{% url 'category_create' %}" class="btn btn-success">カテゴリ追加</a>
+    <a href="{% url 'list' %}" class="btn btn-secondary">戻る</a>
+  </div>
+{% endblock header %}
+
+{% block content %}
+  <div class="shadow-sm p-3 mb-5 bg-white rounded">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>カテゴリ名</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+          <tr>
+            <td>{{ category.name }}</td>
+            <td>
+              <a href="{% url 'category_update' category.pk %}" class="btn btn-primary btn-sm">編集</a>
+              <a href="{% url 'category_delete' category.pk %}" class="btn btn-danger btn-sm">削除</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="2">カテゴリがありません。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock content %}

@@ -1,0 +1,46 @@
+{% extends 'todo/base.html' %}
+
+{% block header %}
+    <h1>Todo List</h1>
+    <p>今日のタスクを作成しましょう！</p>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <a class="btn btn-primary" href="{% url 'create' %}">新規作成</a>
+        <a class="btn btn-primary" href="?sort=deadline">締切順</a>
+        <a class="btn btn-primary" href="?sort=priority">優先度順</a>
+        <a class="btn btn-primary" href="{% url 'category_list' %}">カテゴリ管理</a>
+    </div>
+{% endblock header %}
+
+{% block content %}
+<div class="shadow-sm p-3 mb-5 bg-white rounded">
+    <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">タイトル</th>
+            <th scope="col">締切日</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.deadline }}</td>
+            <td>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'detail' task.pk %}" class="btn btn-primary">詳細</a>
+                    <a href="{% url 'update' task.pk %}" class="btn btn-primary">編集</a>
+                    <a href="{% url 'delete' task.pk %}" class="btn btn-danger">削除</a>
+                </div>
+            </td>
+                
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+    
+{% endblock content %}
+    
+    
+        
