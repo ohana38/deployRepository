@@ -7,7 +7,34 @@
 {% block content %}
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    <div class="mb-3">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        <div style="font-size: 0.9em; color: #6c757d;">
+            この項目は必須です。<br>
+            半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。
+        </div>
+        {{ form.username.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+        {{ form.password1.help_text }}
+        {{ form.password1.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+        <div style="font-size: 0.9em; color: #6c757d;">
+            確認のため、<br>
+            再度パスワードを入力してください。
+        </div>
+        {{ form.password2.errors }}
+    </div>
+
     <button type="submit" class="btn btn-primary">登録</button>
 </form>
 {% endblock content %}
