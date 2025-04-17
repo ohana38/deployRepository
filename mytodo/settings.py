@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-o&7-)rht$h&%1&3m=pelpompox*um4uf32fn2*&q+e_^=+-p#8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['ohana38.pythonanywhere.com', 'localhost', '127.0.0.1']
 
@@ -46,7 +46,11 @@ ROOT_URLCONF = 'mytodo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "todo/templates"],
+        'DIRS': [
+            BASE_DIR / "todo/templates",
+            BASE_DIR / 'accounts/templates',
+            BASE_DIR / 'mytodo'/'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,6 +111,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -114,6 +119,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = "/list"
-LOGOUT_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = 'logout_page'
 
 

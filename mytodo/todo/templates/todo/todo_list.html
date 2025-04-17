@@ -2,12 +2,14 @@
 
 {% block header %}
     <h1>Todo List</h1>
+    <p>{{ user.username }}さん、ようこそ！</p>
     <p>今日のタスクを作成しましょう！</p>
     <div class="d-flex flex-wrap gap-2 mb-3">
         <a class="btn btn-primary" href="{% url 'create' %}">新規作成</a>
         <a class="btn btn-primary" href="?sort=deadline">締切順</a>
         <a class="btn btn-primary" href="?sort=priority">優先度順</a>
         <a class="btn btn-primary" href="{% url 'category_list' %}">カテゴリ管理</a>
+        <a href="{% url 'edit_user' %}" class="btn btn-outline-secondary btn-sm">ユーザー情報編集</a>
     </div>
 {% endblock header %}
 
@@ -16,9 +18,10 @@
     <table class="table">
         <thead>
             <tr>
-            <th scope="col">タイトル</th>
-            <th scope="col">締切日</th>
-            <th scope="col"></th>
+                <th scope="col">完了</th>
+                <th scope="col">タイトル</th>
+                <th scope="col">締切日</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

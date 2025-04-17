@@ -1,0 +1,58 @@
+{% extends 'todo/base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2>ユーザー情報の編集</h2>
+
+    {% if messages %}
+      <div class="alert alert-success">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="id_username" class="form-label">ユーザー名：</label>
+        {{ form.username }}
+        {% for error in form.username.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+
+      <h4 class="mt-4">パスワードの変更</h4>
+
+      <div class="mb-3">
+        <label for="id_old_password" class="form-label">現在のパスワード：</label>
+        <input type="password" name="old_password" class="form-control" id="id_old_password" required>
+        {% for error in password_form.old_password.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="mb-3">
+        <label for="id_new_password1" class="form-label">新しいパスワード：</label>
+        <input type="password" name="new_password1" class="form-control" id="id_new_password1" required>
+        {% for error in password_form.new_password1.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <div class="mb-3">
+        <label for="id_new_password2" class="form-label">新しいパスワード（確認）：</label>
+        <input type="password" name="new_password2" class="form-control" id="id_new_password2" required>
+        {% for error in password_form.new_password2.errors %}
+          <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+      </div>
+      
+      <button type="submit" class="btn btn-primary">保存</button>
+      <a href="{% url 'list' %}" class="btn btn-secondary ms-2">戻る</a>
+    </form>
+  </div>
+{% endblock %}

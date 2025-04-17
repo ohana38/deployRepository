@@ -1,5 +1,6 @@
+from collections import defaultdict
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -9,6 +10,8 @@ from .models import Todo
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Category
 from django.views.generic import TemplateView
+from django.views import View
+
 
 class WelcomeView(TemplateView):
     template_name = "todo/welcome.html" 
@@ -33,6 +36,7 @@ class TodoForm(forms.ModelForm):
         fields = ['title', 'description', 'deadline', 'priority', 'category']
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),
+            'priority': forms.Select(choices=Todo.PRIORITY_CHOICES),
         }
 
 class TodoDetail(DetailView):
@@ -80,6 +84,25 @@ class RegisterView(CreateView):
       
 @login_required
 def todo_list(request):
-    tasks = Todo.objects.all()  
-    return render(request, 'todo/todo_list.html', {'tasks': tasks})
-      
+    sort = request.GET.get('sort')
+    tasks = Todo.objects.filter(user=request.user)
+    
+    if sort == 'deadline':
+        tasks = tasks.order_by('deadline')
+    elif sort == 'priority':
+        tasks = tasks.order_by('priority')
+        
+    grouped_tasks = defaultdict(list)
+    for task in tasks:
+        grouped_tasks[task.category.name if task.category else '未分類'].append(task)
+    
+    return render(request, 'todo/todo_list.html', {
+        'grouped_tasks': grouped_tasks.items()
+    })
+
+class ToggleStatusView(View):
+    def post(self, request, pk):
+        task = get_object_or_404(Todo, pk=pk)
+        task.status = 0 if task.status == 1 else 1
+        task.save()
+        return redirect('list')    

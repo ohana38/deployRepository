@@ -25,7 +25,7 @@ class TodoList(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         sort_by = self.request.GET.get("sort", "deadline")
-        return Todo.objects.order_by(sort_by)
+        return Todo.objects.filter(user=self.request.user).order_by(sort_by)
 
 class TodoForm(forms.ModelForm):
     class Meta:

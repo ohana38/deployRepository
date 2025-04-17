@@ -1,14 +1,21 @@
 {% extends 'todo/base.html' %}
 
-{% block header %}
-  <h1>カテゴリ削除</h1>
-{% endblock header %}
-
 {% block content %}
-  <p>本当に「{{ object.name }}」を削除してもよろしいですか？</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">削除</button>
-    <a href="{% url 'category_list' %}" class="btn btn-secondary">キャンセル</a>
-  </form>
-{% endblock content %}
+<div class="shadow-sm p-4 mb-5 bg-white rounded">
+    <h2>削除の確認</h2>
+    
+    {% if object.title %}
+        <p>本当に「{{ object.title }}」を削除しますか？</p>
+    {% elif object.name %}
+        <p>本当に「{{ object.name }}」を削除しますか？</p>
+    {% else %}
+        <p>本当に削除しますか？</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">削除</button>
+        <a href="{% url 'list' %}" class="btn btn-secondary">キャンセル</a>
+    </form>
+</div>
+{% endblock %}
