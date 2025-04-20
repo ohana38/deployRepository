@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django import forms
+from django.core.exceptions import PermissionDenied 
 
 # --- ユーザー名変更用フォーム ---
 class UserUpdateForm(forms.ModelForm):
@@ -24,7 +25,7 @@ class CustomLoginView(LoginView):
         new_user = form.get_user()
         if current_user.is_authenticated and current_user != new_user:
             messages.error(self.request, 'すでに別のユーザーでログイン中です。')
-            return redirect('error_403')  # 作成済みの403エラーページにリダイレクト
+            raise PermissionDenied
         auth_login(self.request, new_user)
         return redirect(self.get_success_url())
 
