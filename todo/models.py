@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.conf import settings
+
 
 class Category(models.Model):
     name = models.CharField("カテゴリ名", max_length=50)
@@ -8,6 +10,10 @@ class Category(models.Model):
         return self.name
 
 class Todo(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # これによりカスタムユーザーモデルを参照
+        on_delete=models.CASCADE
+    )
     STATUS_CHOICES = [
         (0, '未完了'),
         (1, '完了'),
@@ -22,7 +28,7 @@ class Todo(models.Model):
     deadline = models.DateField("締切")
     priority = models.IntegerField("優先度", default=1)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     status = models.IntegerField("状態", choices=STATUS_CHOICES, default=0)
 

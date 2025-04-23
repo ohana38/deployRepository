@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseNotFound, HttpResponseServerError
+from django.core.exceptions import PermissionDenied
 
 def bad_request(request, exception=None):
     return render(request, 'errors/400.html', status=400)

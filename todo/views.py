@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Category
 from django.views.generic import TemplateView
 from django.views import View
-
+from accounts.forms import CustomUserCreationForm
 
 class WelcomeView(TemplateView):
     template_name = "todo/welcome.html" 
@@ -28,7 +28,7 @@ class TodoList(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         sort_by = self.request.GET.get("sort", "deadline")
-        return Todo.objects.order_by(sort_by)
+        return Todo.objects.filter(user=self.request.user).order_by(sort_by)
 
 class TodoForm(forms.ModelForm):
     class Meta:
@@ -43,10 +43,14 @@ class TodoDetail(DetailView):
     model = Todo
     context_object_name = "task"    
     
-class TodoCreate(CreateView):
+class TodoCreate(LoginRequiredMixin,CreateView):
     model = Todo
     form_class = TodoForm
-    success_url = reverse_lazy("list")    
+    success_url = reverse_lazy("list")  
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user  # ←ここでログインユーザーをセット！
+        return super().form_valid(form)  
     
 class TodoUpdate(UpdateView):
     model = Todo
@@ -78,9 +82,20 @@ class CategoryDelete(DeleteView):
     success_url = reverse_lazy("category_list")
     
 class RegisterView(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = 'todo/register.html'
-    success_url = reverse_lazy('login')    
+    success_url = reverse_lazy('login')  
+    
+    def form_valid(self, form):
+        # フォームが有効な場合、ユーザーを作成
+        response = super().form_valid(form)
+        # 必要に応じて他の操作を行うことができます（例：メール送信など）
+        return response
+
+    def form_invalid(self, form):
+        # フォームが無効な場合、エラーメッセージを表示
+        return self.render_to_response(self.get_context_data(form=form))
+  
       
 @login_required
 def todo_list(request):

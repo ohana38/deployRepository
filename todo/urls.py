@@ -17,6 +17,7 @@ urlpatterns = [
     path("categories/update/<int:pk>/", CategoryUpdate.as_view(), name="category_update"),
     path("categories/delete/<int:pk>/", CategoryDelete.as_view(), name="category_delete"),
     path("toggle_status/<int:pk>/", ToggleStatusView.as_view(), name="toggle_status"),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
 ]
     # path("login/", auth_views.LoginView.as_view(), name="login"),
     # path("logout/", auth_views.LogoutView.as_view(), name="logout"),
