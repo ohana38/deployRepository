@@ -5,6 +5,10 @@ from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField("カテゴリ名", max_length=50)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # ユーザーごとのカテゴリを関連づける
+        on_delete=models.CASCADE
+    )
 
     def __str__(self):
         return self.name

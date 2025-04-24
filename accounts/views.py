@@ -49,7 +49,11 @@ class UserEditView(LoginRequiredMixin, View):
             password_form.save()
             update_session_auth_hash(request, request.user)
             messages.success(request, '保存完了')
-            return redirect('list')
+            return render(request, 'accounts/user_edit.html', {
+                'user_form': UserUpdateForm(instance=request.user),
+                'password_form': PasswordChangeForm(user=request.user),
+            })
+
 
         return render(request, 'accounts/user_edit.html', {  # ← こちらも修正済み！
             'user_form': user_form,

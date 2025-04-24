@@ -12,6 +12,8 @@ from .models import Category
 from django.views.generic import TemplateView
 from django.views import View
 from accounts.forms import CustomUserCreationForm
+from django.core.exceptions import PermissionDenied
+
 
 class WelcomeView(TemplateView):
     template_name = "todo/welcome.html" 
@@ -66,20 +68,45 @@ class TodoDelete(DeleteView):
 class CategoryList(ListView):
     model = Category
     context_object_name = "categories"
+    login_url = "login"
+    
+    def get_queryset(self):
+        # ログインユーザーに関連するカテゴリのみを取得
+        return Category.objects.filter(todo__user=self.request.user).distinct()
 
 class CategoryCreate(CreateView):
     model = Category
     fields = ["name"]
     success_url = reverse_lazy("category_list")
+    
+    def form_valid(self, form):
+        # フォームが有効な場合、カテゴリにログインユーザーを関連付け
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 
 class CategoryUpdate(UpdateView):
     model = Category
     fields = ["name"]
     success_url = reverse_lazy("category_list")
+    
+    def get_object(self):
+        # ユーザーが自分のカテゴリのみ編集できるように制限
+        category = super().get_object()
+        if category.user != self.request.user:
+            raise PermissionDenied
+        return category
 
 class CategoryDelete(DeleteView):
     model = Category
     success_url = reverse_lazy("category_list")
+    
+    def get_object(self):
+        # ユーザーが自分のカテゴリのみ削除できるように制限
+        category = super().get_object()
+        if category.user != self.request.user:
+            raise PermissionDenied
+        return category
     
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
@@ -105,7 +132,7 @@ def todo_list(request):
     if sort == 'deadline':
         tasks = tasks.order_by('deadline')
     elif sort == 'priority':
-        tasks = tasks.order_by('priority')
+        tasks = tasks.order_by('-priority')
         
     grouped_tasks = defaultdict(list)
     for task in tasks:

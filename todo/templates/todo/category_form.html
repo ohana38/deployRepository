@@ -1,7 +1,7 @@
 {% extends 'todo/base.html' %}
 
 {% block header %}
-  <h1>カテゴリ {{ view.object.pk|default:'追加' }}</h1>
+  <h1>カテゴリ {% if view.object.pk %}「{{ view.object.name }}」の編集{% else %}の追加{% endif %}</h1>
 {% endblock header %}
 
 {% block content %}
